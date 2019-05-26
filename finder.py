@@ -8,7 +8,7 @@ import argparse
 
 
 class Finder(object):
-    log_file = "/home/romain/projects/scripts/finder_logs.txt"
+    log_file = "/home/romain/projects/scripts/finder/logs.txt"
     accepted_format = (".py", ".html", ".js")
 
     size_title = 0
