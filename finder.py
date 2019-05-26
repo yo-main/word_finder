@@ -6,8 +6,7 @@ import sys
 import os
 import argparse
 
-ACCEPTED_FORMAT = (".py", ".html", ".js")
-
+ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt")
 
 class Finder(object):
     log_file = "logs.txt"
@@ -29,13 +28,14 @@ class Finder(object):
         self.print_result()
 
     def _prepare_printing(self):
-        body = []
+        out = []
         total = {word: 0 for word in self.words}
 
         title_words = tuple(word.decode() for word in self.words)
-        titles = ("FILE",) + title_words
+        out.append(("FILE",) + title_words)
+
         self.size_row = len(max(title_words, key=len))
-        self.size_title = len(titles[0])
+        self.size_title = len(out[0][0])
 
         for filepath in self.words_count:
             row = [
@@ -49,35 +49,26 @@ class Finder(object):
             self.size_title = max(self.size_title, len(filepath))
             self.size_row = max(self.size_row, len(max(row[1:], key=len)))
 
-            body.append(row)
+            out.append(row)
 
-        if len(body) > 1:
+        if len(out) > 2:
             total_row = [str(total[word]) for word in self.words]
             total_row.insert(0, "TOTAL")
-            body.append(total_row)
+            out.append(total_row)
 
-        return titles, body
+        return out
 
     def print_result(self):
         if not self.words_count:
             print("No result found !")
             return False
 
-        titles, body = self._prepare_printing()
+        to_print = self._prepare_printing()
 
         template = "{filepath:<{max_size_filepath}}"
         template += " | {:>{max_size_word}}" * len(self.words)
 
-        print(
-            template.format(
-                filepath=titles[0],
-                max_size_filepath=self.size_title,
-                max_size_word=self.size_row,
-                *titles[1:]
-            )
-        )
-
-        for row in body:
+        for row in to_print:
             print(
                 template.format(
                     filepath=row[0],
@@ -153,7 +144,7 @@ class Finder(object):
 
     def match_found(self, filepath, row, row_nb):
         template = "Match found on row {}\n{}\n{}\n\n".format(
-            row_nb, filepath, row
+            row_nb, filepath, row.decode()
         )
 
         if self.verbose:
