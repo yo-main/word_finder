@@ -6,11 +6,7 @@ import sys
 import os
 import argparse
 
-ACCEPTED_FORMAT = (
-    ".py",
-    ".html",
-    ".js"
-)
+ACCEPTED_FORMAT = (".py", ".html", ".js")
 
 
 class Finder(object):
@@ -37,13 +33,14 @@ class Finder(object):
         total = {word: 0 for word in self.words}
 
         title_words = tuple(word.decode() for word in self.words)
-        titles = ('FILE',) + title_words
+        titles = ("FILE",) + title_words
         self.size_row = len(max(title_words, key=len))
         self.size_title = len(titles[0])
 
         for filepath in self.words_count:
-            row = [str(self.words_count[filepath][word])
-                   for word in self.words]
+            row = [
+                str(self.words_count[filepath][word]) for word in self.words
+            ]
             row.insert(0, filepath)
 
             for word in self.words:
@@ -56,11 +53,10 @@ class Finder(object):
 
         if len(body) > 1:
             total_row = [str(total[word]) for word in self.words]
-            total_row.insert(0, 'TOTAL')
+            total_row.insert(0, "TOTAL")
             body.append(total_row)
 
         return titles, body
-
 
     def print_result(self):
         if not self.words_count:
@@ -72,12 +68,14 @@ class Finder(object):
         template = "{filepath:<{max_size_filepath}}"
         template += " | {:>{max_size_word}}" * len(self.words)
 
-        print(template.format(
-            filepath=titles[0],
-            max_size_filepath=self.size_title,
-            max_size_word=self.size_row,
-            *titles[1:]
-        ))
+        print(
+            template.format(
+                filepath=titles[0],
+                max_size_filepath=self.size_title,
+                max_size_word=self.size_row,
+                *titles[1:]
+            )
+        )
 
         for row in body:
             print(
@@ -90,7 +88,7 @@ class Finder(object):
             )
 
     def _is_file_searchable(self, filename):
-        if filename.startswith('.'):
+        if filename.startswith("."):
             return False
         if not any(filename.endswith(ext) for ext in ACCEPTED_FORMAT):
             return False
@@ -208,7 +206,7 @@ class Finder(object):
             "-cs",
             "--case_sensitive",
             action="store_false",
-            help="search is case sensitive"
+            help="search is case sensitive",
         )
 
 
