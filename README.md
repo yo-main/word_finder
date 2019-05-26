@@ -2,7 +2,7 @@ Script to be able to recursively search through a directory and have a summary p
 
 Example:
 ```
-./finder.py hello world
+./finder.py hello world test
 
 FILE              | hello | world | test
 login.html        |     1 |     0 |    0
