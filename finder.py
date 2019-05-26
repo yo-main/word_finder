@@ -6,10 +6,15 @@ import sys
 import os
 import argparse
 
+ACCEPTED_FORMAT = (
+    ".py",
+    ".html",
+    ".js"
+)
+
 
 class Finder(object):
-    log_file = "/home/romain/projects/scripts/finder/logs.txt"
-    accepted_format = (".py", ".html", ".js")
+    log_file = "logs.txt"
 
     size_title = 0
     size_row = 0
@@ -87,7 +92,7 @@ class Finder(object):
     def _is_file_searchable(self, filename):
         if filename.startswith('.'):
             return False
-        if not any(filename.endswith(ext) for ext in self.accepted_format):
+        if not any(filename.endswith(ext) for ext in ACCEPTED_FORMAT):
             return False
         return True
 

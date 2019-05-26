@@ -17,8 +17,12 @@ TOTAL             |     8 |     8 |   13
 
 Accepted parameters:
 ```
--dir    directory         -> choos the directory where the search will be applied (current folder by default)
+-dir    directory         -> choose the directory where the search will be applied (current folder by default)
 -v      verbose           -> print the row for every match - usefull to get the context
 -fn     full name         -> Use file path instead of name as references
 -cs     case sensitive    -> Apply the search with case sensitiveness
 ```
+
+A log file will also be created (by default in your current directory) where you can see a detailed view of the search)
+
+By default the script will only search py/html/js files but you can easily change that from the script.
