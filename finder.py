@@ -8,6 +8,7 @@ import argparse
 
 ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt")
 
+
 class Finder(object):
     log_file = "logs.txt"
 
@@ -144,13 +145,14 @@ class Finder(object):
 
     def match_found(self, filepath, row, row_nb):
         template = "Match found on row {}\n{}\n{}\n\n".format(
-            row_nb, filepath, row.decode()
+            row_nb, filepath, row.decode(errors="replace")
         )
 
         if self.verbose:
             print(template)
-        with open(self.log_file, "a") as f:
-            f.write(template)
+        if self.save:
+            with open(self.log_file, "a") as f:
+                f.write(template)
 
     def parse_arguments(self):
         arguments = sys.argv[1:]
@@ -160,6 +162,7 @@ class Finder(object):
         self.directory = res.directory
         self.full_name = res.full_name
         self.case_sensitive = res.case_sensitive
+        self.save = res.save
 
         self.words = [word.encode() for word in self.original_words]
         self.words = sorted(self.words, key=len, reverse=True)
@@ -198,6 +201,12 @@ class Finder(object):
             "--case_sensitive",
             action="store_false",
             help="search is case sensitive",
+        )
+        self.parser.add_argument(
+            "-s",
+            "--save",
+            action="store_true",
+            help="save search details result in a file from your current directory",
         )
 
 
