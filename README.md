@@ -2,7 +2,7 @@ Script to be able to recursively search through a directory and have a summary p
 
 Example:
 ```
-./finder.py hello world
+./finder.py hello world test
 
 FILE              | hello | world | test
 login.html        |     1 |     0 |    0
@@ -25,4 +25,4 @@ Accepted parameters:
 
 A log file will also be created (by default in your current directory) where you can see a detailed view of the search)
 
-By default the script will only search py/html/js files but you can easily change that from the script.
+By default the script will only search py/html/js/txt files but you can easily change that from the script.
