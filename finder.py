@@ -25,8 +25,20 @@ class Finder(object):
 
     def run(self):
         for filepath in self.get_file():
-            self.search_file(filepath)
-        self.print_result()
+            if not self.filename:
+                self.search_file_content(filepath)
+            else:
+                self.search_filename(filepath)
+
+        if not self.filename:
+            self.print_result()
+
+    def search_filename(self, filepath):
+        filename = os.path.basename(filepath)
+
+        for word in self.words:
+            if word in filename.encode():
+                print(filepath)
 
     def _prepare_printing(self):
         out = []
@@ -95,7 +107,7 @@ class Finder(object):
                 filepath = os.path.join(root, filename)
                 yield filepath
 
-    def search_file(self, filepath):
+    def search_file_content(self, filepath):
         with open(filepath, "rb") as f:
             row_nb = 0
             for row in f.readlines():
@@ -132,7 +144,7 @@ class Finder(object):
         return word_found
 
     def _register_row_counter(self, filepath, counter):
-        if self.full_name:
+        if self.full_path:
             filename = filepath
         else:
             filename = os.path.basename(filepath)
@@ -160,7 +172,8 @@ class Finder(object):
         self.original_words = res.words
         self.verbose = res.verbose
         self.directory = res.directory
-        self.full_name = res.full_name
+        self.full_path = res.full_path
+        self.filename = res.name
         self.case_sensitive = res.case_sensitive
         self.save = res.save
 
@@ -191,10 +204,10 @@ class Finder(object):
             help="print the row where a match is hit",
         )
         self.parser.add_argument(
-            "-fn",
-            "--full_name",
+            "-fp",
+            "--full_path",
             action="store_true",
-            help="show ull filepath instead of just " "name",
+            help="show full filepath instead of just the file name",
         )
         self.parser.add_argument(
             "-cs",
@@ -207,6 +220,12 @@ class Finder(object):
             "--save",
             action="store_true",
             help="save search details result in a file from your current directory",
+        )
+        self.parser.add_argument(
+            "-n",
+            "--name",
+            action="store_true",
+            help="search by filename instead of content",
         )
 
 
