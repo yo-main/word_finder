@@ -6,7 +6,7 @@ import sys
 import os
 import argparse
 
-ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt")
+ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt", ".log")
 
 
 class Finder(object):
@@ -94,7 +94,9 @@ class Finder(object):
     def _is_file_searchable(self, filename):
         if filename.startswith("."):
             return False
-        if not any(filename.endswith(ext) for ext in ACCEPTED_FORMAT):
+        if not self.all_files and not any(
+            filename.endswith(ext) for ext in ACCEPTED_FORMAT
+        ):
             return False
         return True
 
@@ -176,6 +178,7 @@ class Finder(object):
         self.filename = res.name
         self.case_sensitive = res.case_sensitive
         self.save = res.save
+        self.all_files = res.all_files
 
         self.words = [word.encode() for word in self.original_words]
         self.words = sorted(self.words, key=len, reverse=True)
@@ -226,6 +229,12 @@ class Finder(object):
             "--name",
             action="store_true",
             help="search by filename instead of content",
+        )
+        self.parser.add_argument(
+            "-a",
+            "--all_files",
+            action="store_true",
+            help="will look through all files extentions",
         )
 
 
