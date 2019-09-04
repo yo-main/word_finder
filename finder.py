@@ -6,7 +6,7 @@ import sys
 import os
 import argparse
 
-ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt", ".log")
+ACCEPTED_FORMAT = (".py", ".html", ".js", ".txt", ".log", ".php")
 
 
 class Finder(object):
@@ -114,6 +114,7 @@ class Finder(object):
             row_nb = 0
             for row in f.readlines():
                 row_nb += 1
+
                 if self.search_row(row, filepath):
                     self.match_found(filepath, row, row_nb)
 
@@ -124,6 +125,10 @@ class Finder(object):
 
         if self.case_sensitive:
             row = row.lower()
+
+        for excluded_word in self.excluded:
+            if excluded_word in row:
+                return False
 
         for word in self.words:
             count = row.count(word)
@@ -142,8 +147,9 @@ class Finder(object):
 
         if word_found:
             self._register_row_counter(filepath, row_counter)
+            return True
 
-        return word_found
+        return False
 
     def _register_row_counter(self, filepath, counter):
         if self.full_path:
@@ -179,11 +185,15 @@ class Finder(object):
         self.case_sensitive = res.case_sensitive
         self.save = res.save
         self.all_files = res.all_files
-
+        self.excluded = res.exclude or []
+        self.excluded = [word.encode() for word in self.excluded]
         self.words = [word.encode() for word in self.original_words]
         self.words = sorted(self.words, key=len, reverse=True)
+
         if self.case_sensitive:
             self.words = [word.lower() for word in self.words]
+            self.excluded = [word.lower() for word in self.excluded]
+
         self.words_count = {}
 
     def build_parser(self):
@@ -235,6 +245,12 @@ class Finder(object):
             "--all_files",
             action="store_true",
             help="will look through all files extentions",
+        )
+        self.parser.add_argument(
+            "-e",
+            "--exclude",
+            nargs="*",
+            help="Will not match any line with one of the provided keyword",
         )
 
 
